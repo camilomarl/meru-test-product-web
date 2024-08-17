@@ -1,7 +1,7 @@
 import { FormEvent, useEffect, useState } from 'react';
 import { Product } from '../../api/models';
 import { useNavigate, useParams } from 'react-router-dom';
-import { fetchProduct, updateProduct } from '../../api/products';
+import { createProduct, fetchProduct, updateProduct } from '../../api/products';
 
 const EditProduct = () => {
   const { productId } = useParams();
@@ -28,12 +28,10 @@ const EditProduct = () => {
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (productId) {
-      const response = await updateProduct(product);
-      if (response) {
-        console.log('redirect to products');
-        navigate('/products');
-      }
+    const response = productId ? await updateProduct(product) : await createProduct(product);
+    if (response) {
+      console.log('redirect to products');
+      navigate('/products');
     }
   };
 
