@@ -3,15 +3,24 @@ import { Product } from '../../api/models';
 import { InformationCircleIcon, TrashIcon } from '@heroicons/react/16/solid';
 import { Link, useNavigate } from 'react-router-dom';
 import clsx from 'clsx';
-import { fetchProducts } from '../../api/products';
+import { deleteProduct, fetchProducts } from '../../api/products';
+import ConfirmDialog from '../../components/dialog/ConfirmDialog';
+import Button from '../../components/button/Button';
+
+type DeleteDialog = {
+  open: boolean;
+  productId: string;
+};
 
 const ListProducts = () => {
   const [products, setProducts] = useState<Product[]>([]);
+  const [deleteDialog, setDeleteDialog] = useState<DeleteDialog>({
+    open: false,
+    productId: '',
+  });
   const navigate = useNavigate();
   const thClass = 'w-1/3 text-left py-3 px-4 uppercase font-semibold text-sm';
   const tdClass = 'w-1/3 text-left py-3 px-4';
-  const buttonClass =
-    'rounded-md px-3 py-2 text-sm font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2';
 
   useEffect(() => {
     getProducts();
@@ -24,7 +33,12 @@ const ListProducts = () => {
     }
   };
 
-  const deleteProduct = () => {};
+  const destroyProduct = async (productId: string) => {
+    const response = await deleteProduct(productId);
+    if (response) {
+      getProducts();
+    }
+  };
 
   return (
     <>
@@ -34,17 +48,15 @@ const ListProducts = () => {
             <h1 className="text-3xl my-4">Products</h1>
           </div>
           <div className="flex justify-end">
-            <button
-              className={clsx(
-                buttonClass,
-                'w-40 bg-indigo-600 hover:bg-indigo-500 focus-visible:outline-indigo-600'
-              )}
+            <Button
+              variant="primary"
+              className="w-40"
               onClick={() => {
                 navigate('/products/new');
               }}
             >
               Create Product
-            </button>
+            </Button>
           </div>
         </div>
         {!products && (
@@ -81,16 +93,21 @@ const ListProducts = () => {
                   <td className={tdClass}>{product.price}</td>
                   <td className={tdClass}>{product.stock}</td>
                   <td>
-                    <button
-                      className={clsx(
-                        buttonClass,
-                        'bg-red-600 hover:bg-red-500 focus-visible:outline-red-600 flex flex-row items-center'
-                      )}
-                      onClick={deleteProduct}
+                    <Button
+                      variant="danger"
+                      className="flex flex-row items-center"
+                      onClick={() => {
+                        if (product.id) {
+                          setDeleteDialog({
+                            open: true,
+                            productId: product.id,
+                          });
+                        }
+                      }}
                     >
                       <TrashIcon className="w-5 mr-3" />
                       Delete
-                    </button>
+                    </Button>
                   </td>
                 </tr>
               ))}
@@ -98,6 +115,16 @@ const ListProducts = () => {
           </table>
         )}
       </div>
+      <ConfirmDialog
+        title="Confirm product deletion"
+        open={deleteDialog.open}
+        onClose={() => setDeleteDialog({ open: false, productId: '' })}
+        onConfirm={() => {
+          destroyProduct(deleteDialog.productId);
+        }}
+      >
+        Are you sure to delete this product?
+      </ConfirmDialog>
     </>
   );
 };

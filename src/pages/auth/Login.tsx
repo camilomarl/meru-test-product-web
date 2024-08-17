@@ -1,6 +1,7 @@
 import { FormEvent, useState } from 'react';
 import { signIn } from '../../api/auth';
 import { useNavigate } from 'react-router-dom';
+import Button from '../../components/button/Button';
 interface LoginData {
   email: string;
   password: string;
@@ -80,12 +81,15 @@ const Login = () => {
           </div>
 
           <div>
-            <button
+            <Button type="submit" className="flex w-full justify-center">
+              Sign In
+            </Button>
+            {/* <button
               type="submit"
               className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
             >
               Sign in
-            </button>
+            </button> */}
           </div>
         </form>
       </div>

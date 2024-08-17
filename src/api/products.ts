@@ -78,3 +78,26 @@ export const updateProduct = async (product: Product) => {
   }
   return undefined;
 };
+
+export const deleteProduct = async (productId: string) => {
+  const token = localStorage.getItem('token');
+  let saveHeaders = {
+    ...headers,
+  };
+  if (token) {
+    saveHeaders = {
+      ...headers,
+      Authorization: `Bearer ${token}`,
+    };
+  }
+
+  const response = await fetch('http://localhost:3000/products/' + productId, {
+    method: 'DELETE',
+    headers: saveHeaders,
+  });
+
+  if (response.ok) {
+    return await response.json();
+  }
+  return undefined;
+};
