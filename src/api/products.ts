@@ -45,11 +45,16 @@ export const createProduct = async (product: Product) => {
     body: JSON.stringify(product),
     headers: saveHeaders,
   });
-
+  console.log('createProduct:', response);
+  const { error, ...responseData } = await response.json();
+  console.log('createProduct:', error, responseData);
   if (response.ok) {
-    return await response.json();
+    return responseData;
   }
-  return undefined;
+  const errorDescription = Object.keys(responseData)
+    .map((field) => `${field} ${responseData[field].join(', ')}`)
+    .join(', ');
+  return new Error(error ?? errorDescription);
 };
 
 export const updateProduct = async (product: Product) => {
@@ -73,10 +78,15 @@ export const updateProduct = async (product: Product) => {
     headers: saveHeaders,
   });
 
+  const { error, ...responseData } = await response.json();
+  console.log('updateProduct:', error, responseData);
   if (response.ok) {
-    return await response.json();
+    return responseData;
   }
-  return undefined;
+  const errorDescription = Object.keys(responseData)
+    .map((field) => `${field} ${responseData[field].join(', ')}`)
+    .join(', ');
+  return new Error(error ?? errorDescription);
 };
 
 export const deleteProduct = async (productId: string) => {
@@ -96,8 +106,12 @@ export const deleteProduct = async (productId: string) => {
     headers: saveHeaders,
   });
 
+  const { error, ...responseData } = await response.json();
   if (response.ok) {
-    return await response.json();
+    return responseData;
   }
-  return undefined;
+  const errorDescription = Object.keys(responseData)
+    .map((field) => `${field} ${responseData[field].join(', ')}`)
+    .join(', ');
+  return new Error(error ?? errorDescription);
 };

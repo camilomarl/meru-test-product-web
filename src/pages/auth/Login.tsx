@@ -14,14 +14,14 @@ const Login = () => {
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
     setError(undefined);
-    const token = await signIn(formData.email, formData.password);
-    console.log('token:', token);
-    if (token) {
-      localStorage.setItem('token', token.token);
+    const response = await signIn(formData.email, formData.password);
+    console.log('signIn response:', response);
+    if (response instanceof Error) {
+      setError(response.message);
+    } else {
+      localStorage.setItem('token', response.token);
       localStorage.setItem('user', formData.email);
       location.href = '/products';
-    } else {
-      setError('Invalid username or password');
     }
   };
 

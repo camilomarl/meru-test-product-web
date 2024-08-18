@@ -7,7 +7,7 @@ export const isAuthenticated = () => {
 export const signIn = async (
   email: string,
   password: string
-): Promise<{ token: string } | undefined> => {
+): Promise<{ token: string } | Error> => {
   const response = await fetch('http://localhost:3000/auth/login', {
     method: 'POST',
     headers: {
@@ -17,11 +17,12 @@ export const signIn = async (
     body: JSON.stringify({ email, password }),
   });
   console.log('signIn:', response);
+  const { error, token } = await response.json();
+
   if (response.ok) {
-    const loginData = await response.json();
-    return loginData;
+    return { token };
   }
-  return undefined;
+  return new Error(error);
 };
 
 export const signOut = () => {

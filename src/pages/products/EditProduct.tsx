@@ -4,6 +4,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { createProduct, fetchProduct, updateProduct } from '../../api/products';
 import Button from '../../components/button/Button';
 import NavBar from '../../components/navigation/NavBar';
+import Alert from '../../components/alert/Alert';
 
 const EditProduct = () => {
   const { productId } = useParams();
@@ -16,6 +17,8 @@ const EditProduct = () => {
     price: '',
     stock: '',
   });
+
+  const [error, setError] = useState<string | undefined>(undefined);
 
   useEffect(() => {
     if (productId) {
@@ -31,7 +34,9 @@ const EditProduct = () => {
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const response = productId ? await updateProduct(product) : await createProduct(product);
-    if (response) {
+    if (response instanceof Error) {
+      setError(response.message);
+    } else {
       console.log('redirect to products');
       navigate('/products');
     }
@@ -48,6 +53,7 @@ const EditProduct = () => {
     <>
       <NavBar />
       <div className="p-10">
+        {error && <Alert type="error" message={error} />}
         <form onSubmit={handleSubmit}>
           <div className="space-y-12">
             <div className="border-b border-gray-900/10 pb-12">
