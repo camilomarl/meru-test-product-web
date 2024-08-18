@@ -1,12 +1,13 @@
 import { useEffect, useState } from 'react';
 import { Product } from '../../api/models';
-import { InformationCircleIcon, TrashIcon } from '@heroicons/react/16/solid';
+import { TrashIcon } from '@heroicons/react/16/solid';
 import { Link, useNavigate } from 'react-router-dom';
 import clsx from 'clsx';
 import { deleteProduct, fetchProducts } from '../../api/products';
 import ConfirmDialog from '../../components/dialog/ConfirmDialog';
 import Button from '../../components/button/Button';
 import NavBar from '../../components/navigation/NavBar';
+import Alert from '../../components/alert/Alert';
 
 type DeleteDialog = {
   open: boolean;
@@ -61,15 +62,7 @@ const ListProducts = () => {
             </Button>
           </div>
         </div>
-        {!products && (
-          <div
-            className="flex items-center bg-blue-500 text-white text-sm font-bold px-4 py-3"
-            role="alert"
-          >
-            <InformationCircleIcon className="size-4 mr-3" />
-            <p>No products available.</p>
-          </div>
-        )}
+        {!products && <Alert type="info" message="No products available" />}
         {products && (
           <table className="min-w-full bg-white">
             <thead className="bg-indigo-600 text-white">

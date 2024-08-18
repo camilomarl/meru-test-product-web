@@ -1,6 +1,7 @@
 import { FormEvent, useState } from 'react';
 import { signIn } from '../../api/auth';
 import Button from '../../components/button/Button';
+import Alert from '../../components/alert/Alert';
 interface LoginData {
   email: string;
   password: string;
@@ -8,15 +9,19 @@ interface LoginData {
 
 const Login = () => {
   const [formData, setFormData] = useState<LoginData>({ email: '', password: '' });
+  const [error, setError] = useState<string | undefined>(undefined);
 
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
+    setError(undefined);
     const token = await signIn(formData.email, formData.password);
     console.log('token:', token);
     if (token) {
       localStorage.setItem('token', token.token);
       localStorage.setItem('user', formData.email);
       location.href = '/products';
+    } else {
+      setError('Invalid username or password');
     }
   };
 
@@ -39,6 +44,7 @@ const Login = () => {
       </div>
 
       <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
+        {error && <Alert type="error" message={error} />}
         <form className="space-y-6" method="POST" onSubmit={handleSubmit}>
           <div>
             <label htmlFor="email" className="block text-sm font-medium leading-6 text-gray-900">
