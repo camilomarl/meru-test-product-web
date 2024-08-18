@@ -6,6 +6,7 @@ import clsx from 'clsx';
 import { deleteProduct, fetchProducts } from '../../api/products';
 import ConfirmDialog from '../../components/dialog/ConfirmDialog';
 import Button from '../../components/button/Button';
+import NavBar from '../../components/navigation/NavBar';
 
 type DeleteDialog = {
   open: boolean;
@@ -42,6 +43,7 @@ const ListProducts = () => {
 
   return (
     <>
+      <NavBar />
       <div className="p-10">
         <div className="grid grid-cols-2 gap-4 my-4">
           <div>

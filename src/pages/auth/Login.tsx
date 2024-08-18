@@ -1,6 +1,5 @@
 import { FormEvent, useState } from 'react';
 import { signIn } from '../../api/auth';
-import { useNavigate } from 'react-router-dom';
 import Button from '../../components/button/Button';
 interface LoginData {
   email: string;
@@ -9,7 +8,6 @@ interface LoginData {
 
 const Login = () => {
   const [formData, setFormData] = useState<LoginData>({ email: '', password: '' });
-  const navigate = useNavigate();
 
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
@@ -17,8 +15,8 @@ const Login = () => {
     console.log('token:', token);
     if (token) {
       localStorage.setItem('token', token.token);
-      console.log('redirect products');
-      navigate('/products');
+      localStorage.setItem('user', formData.email);
+      location.href = '/products';
     }
   };
 
@@ -32,6 +30,9 @@ const Login = () => {
   return (
     <div className="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-sm">
+        <h1 className="mt-10 font-mono text-center text-5xl font-bold leading-9 tracking-tight text-gray-900">
+          Meru
+        </h1>
         <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
           Sign in to your account
         </h2>

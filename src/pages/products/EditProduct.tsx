@@ -3,6 +3,7 @@ import { Product } from '../../api/models';
 import { useNavigate, useParams } from 'react-router-dom';
 import { createProduct, fetchProduct, updateProduct } from '../../api/products';
 import Button from '../../components/button/Button';
+import NavBar from '../../components/navigation/NavBar';
 
 const EditProduct = () => {
   const { productId } = useParams();
@@ -45,6 +46,7 @@ const EditProduct = () => {
 
   return (
     <>
+      <NavBar />
       <div className="p-10">
         <form onSubmit={handleSubmit}>
           <div className="space-y-12">

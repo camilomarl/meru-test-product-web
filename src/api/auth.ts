@@ -1,3 +1,9 @@
+export const isAuthenticated = () => {
+  const token = localStorage.getItem('token');
+  console.log('isAuthenticated:', !!token);
+  return !!token;
+};
+
 export const signIn = async (
   email: string,
   password: string
@@ -16,4 +22,10 @@ export const signIn = async (
     return loginData;
   }
   return undefined;
+};
+
+export const signOut = () => {
+  localStorage.removeItem('token');
+  localStorage.removeItem('user');
+  location.href = '/';
 };
