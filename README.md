@@ -4,7 +4,9 @@ This project contains a React project to connect to an API to manage a simple Pr
 
 ## Requirements
 
-- **Node version:** 20+
+- **Node version:** 20+. Follow instructions from [https://nodejs.org/en/download/package-manager](https://nodejs.org/en/download/package-manager)
+
+- **Yarn:** To install do `npm install -g yarn`
 
 - **Project dependencies:** To install the dependencies run `yarn install`
 
@@ -15,17 +17,9 @@ This project contains a React project to connect to an API to manage a simple Pr
 In your terminal run
 
 ```
-npm install
-PORT=4000 yarn dev
+yarn install
+yarn dev
 
 ```
 
-The UI should be running in [http://localhost:4000](http://localhost:4000)
-
-You can find the information of the user to login in to test in the file `db/seeds.rb`
-
-## How to run tests
-
-```
-yarn test
-```
+The UI should be running in [http://localhost:5173](http://localhost:5173)
