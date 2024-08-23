@@ -4,8 +4,13 @@ const headers: { [key: string]: string } = {
   Accept: 'application/json',
 };
 
-export const fetchProducts = async () => {
-  const response = await fetch('http://localhost:3000/products', {
+export const fetchProducts = async (page: number | null) => {
+  const urlParams = new URLSearchParams();
+  if (page) {
+    urlParams.append('page', page.toString());
+  }
+
+  const response = await fetch(`http://localhost:3000/products?${urlParams.toString()}`, {
     method: 'GET',
     headers,
   });

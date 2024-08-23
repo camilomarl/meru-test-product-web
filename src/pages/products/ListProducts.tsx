@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Product } from '../../api/models';
+import { Pagination, Product } from '../../api/models';
 import { TrashIcon } from '@heroicons/react/16/solid';
 import { Link, useNavigate } from 'react-router-dom';
 import clsx from 'clsx';
@@ -8,6 +8,7 @@ import ConfirmDialog from '../../components/dialog/ConfirmDialog';
 import Button from '../../components/button/Button';
 import NavBar from '../../components/navigation/NavBar';
 import Alert from '../../components/alert/Alert';
+import PaginationComponent from '../../components/pagination/Pagination';
 
 type DeleteDialog = {
   open: boolean;
@@ -16,6 +17,8 @@ type DeleteDialog = {
 
 const ListProducts = () => {
   const [products, setProducts] = useState<Product[]>([]);
+  const [pagination, setPagination] = useState<Pagination>();
+  const [page, setPage] = useState<number | null>(null);
   const [deleteDialog, setDeleteDialog] = useState<DeleteDialog>({
     open: false,
     productId: '',
@@ -26,12 +29,13 @@ const ListProducts = () => {
 
   useEffect(() => {
     getProducts();
-  }, []);
+  }, [page]);
 
   const getProducts = async () => {
-    const response = await fetchProducts();
-    if (response) {
-      setProducts(response);
+    const { data, pagination } = await fetchProducts(page);
+    if (data) {
+      setProducts(data);
+      setPagination(pagination);
     }
   };
 
@@ -64,50 +68,53 @@ const ListProducts = () => {
         </div>
         {!products && <Alert type="info" message="No products available" />}
         {products && (
-          <table className="min-w-full bg-white">
-            <thead className="bg-indigo-600 text-white">
-              <tr>
-                <th className={thClass}>Name</th>
-                <th className={thClass}>SKU</th>
-                <th className={thClass}>Serial</th>
-                <th className={thClass}>Price</th>
-                <th className={thClass}>Stock</th>
-                <th className={thClass}>&nbsp;</th>
-              </tr>
-            </thead>
-            <tbody className="text-gray-700">
-              {products.map((product: Product, index: number) => (
-                <tr key={index} className={clsx({ 'bg-indigo-100': index % 2 == 0 })}>
-                  <td className={tdClass}>
-                    <Link to={`/products/edit/${product.id}`}>{product.name}</Link>
-                  </td>
-                  <td className={tdClass}>
-                    <Link to={`/products/edit/${product.id}`}>{product.sku}</Link>
-                  </td>
-                  <td className={tdClass}>{product.serial}</td>
-                  <td className={tdClass}>{product.price}</td>
-                  <td className={tdClass}>{product.stock}</td>
-                  <td>
-                    <Button
-                      variant="danger"
-                      className="flex flex-row items-center"
-                      onClick={() => {
-                        if (product.id) {
-                          setDeleteDialog({
-                            open: true,
-                            productId: product.id,
-                          });
-                        }
-                      }}
-                    >
-                      <TrashIcon className="w-5 mr-3" />
-                      Delete
-                    </Button>
-                  </td>
+          <>
+            <table className="min-w-full bg-white">
+              <thead className="bg-indigo-600 text-white">
+                <tr>
+                  <th className={thClass}>Name</th>
+                  <th className={thClass}>SKU</th>
+                  <th className={thClass}>Serial</th>
+                  <th className={thClass}>Price</th>
+                  <th className={thClass}>Stock</th>
+                  <th className={thClass}>&nbsp;</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody className="text-gray-700">
+                {products.map((product: Product, index: number) => (
+                  <tr key={index} className={clsx({ 'bg-indigo-100': index % 2 == 0 })}>
+                    <td className={tdClass}>
+                      <Link to={`/products/edit/${product.id}`}>{product.name}</Link>
+                    </td>
+                    <td className={tdClass}>
+                      <Link to={`/products/edit/${product.id}`}>{product.sku}</Link>
+                    </td>
+                    <td className={tdClass}>{product.serial}</td>
+                    <td className={tdClass}>{product.price}</td>
+                    <td className={tdClass}>{product.stock}</td>
+                    <td>
+                      <Button
+                        variant="danger"
+                        className="flex flex-row items-center"
+                        onClick={() => {
+                          if (product.id) {
+                            setDeleteDialog({
+                              open: true,
+                              productId: product.id,
+                            });
+                          }
+                        }}
+                      >
+                        <TrashIcon className="w-5 mr-3" />
+                        Delete
+                      </Button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            <PaginationComponent pagination={pagination} goToPage={(newPage) => setPage(newPage)} />
+          </>
         )}
       </div>
       <ConfirmDialog
